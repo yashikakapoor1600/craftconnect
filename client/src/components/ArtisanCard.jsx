@@ -23,12 +23,10 @@ const ArtisanCard = ({ artisan }) => {
     color: '#0056b3',
     margin: '0 0 8px 0',
   };
-  
   const detailStyle = {
       margin: '4px 0',
       fontSize: '0.9rem'
   }
-
   return (
     // Step 2: Poore div ko Link component se wrap karein
     // Yeh artisan ki unique ID ka istemaal karke uske profile page ka link banata hai

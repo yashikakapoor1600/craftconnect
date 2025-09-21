@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const auth = require('../../middleware/auth'); // Auth middleware ko upar import karein
-const User = require('../../models/User');
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken';
+import auth from '../../middleware/auth.js';
+import User from '../../models/User.js';
+import admin from '../../middleware/admin.js';
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -116,5 +117,63 @@ router.get('/artisans', auth, async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
-module.exports = router;
+
+router.get('/artisan-applications',auth,admin,async(req,res)=>{
+    try {
+    const pendingApplications = await User.find({ "artisanInfo.status": "pending" }).select('-password');
+    res.json(pendingApplications);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+// router.put('/approve-artisan/:id',auth,admin,async(req,res)=>{
+//     console.log('Approve artisan route called with id:', req.params.id);
+//     try{
+//         const user = await User.findById(req.params.id);
+//         if(!user || user.role !== 'artisan'){
+//             return res.status(404).json({msg: 'Arstian Not Found'});
+//         }
+//         user.artisanInfo.status = 'approved';
+//         await user.save();
+//         res.json({msg: 'Artisan Approved!',user});
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send('Server Error');
+//     }
+// });
+router.put('/approve-artisan/:id', auth, admin, async (req, res) => {
+  try {
+    console.log('Approve artisan started for ID:', req.params.id);
+    const user = await User.findById(req.params.id);
+    if (!user || user.role !== 'artisan') {
+      console.log('User not found or not artisan');
+      return res.status(404).json({ msg: 'Artisan Not Found' });
+    }
+    user.artisanInfo.status = 'approved';
+    await user.save();
+    console.log('Artisan approved:', user);
+    res.json({ msg: 'Artisan Approved!', user });
+  } catch (err) {
+    console.error('Error approving artisan:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+
+router.put('/reject-artisan/:id',auth,admin,async(req,res)=>{
+    try{
+        const user = await User.findById(req.params.id);
+        if(!user || user.role !== 'artisan'){
+            return res.status(404).json({msg: 'Artisan not Found'});
+        }
+        user.artisanInfo.status = 'rejected';
+        await user.save();
+        res.json({msg: 'Artisan Rejected!',user});
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+export default router;
 

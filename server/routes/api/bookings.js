@@ -1,9 +1,9 @@
 
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const auth = require('../../middleware/auth'); 
-const Booking = require('../../models/Booking'); 
-const User = require('../../models/User'); 
+import auth from '../../middleware/auth.js';
+import Booking from '../../models/Booking.js';
+import User from '../../models/User.js';
 router.post('/', auth, async (req, res) => {
     // Frontend se humein artisan ki ID milegi
     const { artisanId } = req.body;
@@ -84,4 +84,4 @@ router.get('/my-orders', auth, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
