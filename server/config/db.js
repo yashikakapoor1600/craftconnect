@@ -1,9 +1,7 @@
 // server/config/db.js
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
+import mongoose from "mongoose";
+import dotenv from 'dotenv';
 dotenv.config(); // .env file ke variables ko load karne ke liye
-
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -14,4 +12,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;
+export default connectDB;

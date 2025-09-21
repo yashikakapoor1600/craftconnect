@@ -1,5 +1,5 @@
 
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 const BookingSchema = new Schema({
     customer: {
@@ -35,4 +35,4 @@ const BookingSchema = new Schema({
     }
 }, { timestamps: true }); // Yeh 'createdAt' aur 'updatedAt' time apne aap add kar dega
 
-module.exports = mongoose.model('Booking', BookingSchema);
+export default mongoose.model('Booking', BookingSchema);
